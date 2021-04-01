@@ -10,18 +10,18 @@ import os
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
-from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.applications.xception import Xception
 from keras.models import load_model
 from pickle import load
 import numpy as np
-import matplotlib.pyplot as plt
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import filedialog
+from gtts import gTTS
+from pygame import mixer
 
-
+        
 def load_img():
     global img, image_data
     for img_display in frame.winfo_children():
@@ -91,12 +91,21 @@ def caption_img():
     xception_model = Xception(include_top=False, pooling="avg")
     
     photo = extract_features(image_data, xception_model)
-    img = Image.open(image_data)
-    
+    global description
     description = generate_desc(model, tokenizer, photo, max_length)
     description=description[6:-4]
     text=tk.Label(root,text=description)
     text.place(x=100,y=300)
+
+
+
+def play_audio():
+    caption_img()
+    myobj = gTTS(text=description, lang='en', slow=False)
+    myobj.save("description.mp3")    
+    mixer.init()
+    mixer.music.load("description.mp3")
+    mixer.music.play()
 
 
 root =tk.Tk()
@@ -104,7 +113,7 @@ root.title("IMAGE CAPTION")
 root.iconbitmap('class.ico')
 root.resizable(False,False)
 
-tit =tk.Label(root,text="Image Captioing",padx=25,pady=10,font=("",16)).pack()
+tit =tk.Label(root,text="Image Caption",padx=25,pady=10,font=("",16)).pack()
 
 canvas=tk.Canvas(root,height=500,width=500,bg='grey')
 canvas.pack()
@@ -113,6 +122,9 @@ frame=tk.Frame(root,bg='white')
 frame.place(relwidth=0.8,relheight=0.8,relx=0.1,rely=0.1)
 
 choseImage=tk.Button(root,text="Choose Image",padx=35,pady=10,fg="#f4b41a",bg="#143d59",command=load_img)
+choseImage.pack(side=tk.LEFT)
+
+choseImage=tk.Button(root,text="PLAY",padx=35,pady=10,fg="#f4b41a",bg="#143d59",command=play_audio)
 choseImage.pack(side=tk.LEFT)
 
 captionImage=tk.Button(root,text="Caption Image",padx=35,pady=10,fg="#f4b41a",bg="#143d59",command=caption_img)
