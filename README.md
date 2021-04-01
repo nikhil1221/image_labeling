@@ -43,7 +43,7 @@ Dataset [Images Dataset Link](https://github.com/nikhil1221/image_labeling/tree/
 A Gui that uses the model build from keras.applications that gives predict Xception
 
 ![]( =100x100)
-<img src="./output/guisample.png" height="650" width="500" >
+<img src="./output/guiwithaudio.png" height="650" width="500" >
 ---
 
 
